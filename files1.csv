@@ -1,10 +1,10 @@
 Model,Emb,value
 M1,T5,60
-M1,ProtBert,80
-M1,ProtGpt2,75
+M1,Bert,80
+M1,Gpt2,75
 M2,T5,55
-M2,ProtBert,85
-M2,ProtGpt2,45
+M2,Bert,85
+M2,Gpt2,45
 M3,T5,75
-M3,ProtBert,87
-M3,ProtGpt2,10
+M3,Bert,87
+M3,Gpt2,10
