@@ -1,0 +1,3 @@
+Patient's Full name,Patient's ID Number,Doctor's Name,Doctor's Phone Number,Low Glucose Levels (mg/dL),Normal Glucose Levels (mg/dL),High Glucose Levels (mg/dL)
+Sara Norman,5344-9709,Dr. Jason Rosenberg,579-0432,< 80,80-140,> 140
+Gregg Norman,1275-4307,Dr. Nikhil Singh,334-2309,< 70,70-120,> 120
