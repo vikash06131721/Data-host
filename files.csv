@@ -7,4 +7,4 @@ CNN,Bert,87
 CNN,Gpt2,92
 TransF,T5,75
 TransF,Bert,98
-TransF,Gpt2,88
+TransF,Gpt2,92
