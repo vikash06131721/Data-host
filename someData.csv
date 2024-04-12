@@ -1,3 +1,3 @@
-Name,ID,DName,DPhone,Low,Normal,High
-Sara Norman,5344-9709,Dr. Jason Rosenberg,579-0432,< 80,80-140,> 140
-Gregg Norman,1275-4307,Dr. Nikhil Singh,334-2309,< 70,70-120,> 120
+Name,ID,DName,DPhone,L1,L2,L3,L4
+Sara Norman,5344-9709,Dr. Jason Rosenberg,579-0432,80,80,140,140
+Gregg Norman,1275-4307,Dr. Nikhil Singh,334-2309,70,70,120,120
