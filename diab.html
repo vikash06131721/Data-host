@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diabetes Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container, .dashboard {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        select, .logout-button, input, .submit-button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003d7a;
+        }
+        .dashboard {
+            display: none;
+        }
+        .logout-button {
+            background-color: #d9534f;
+        }
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+        .help-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50; /* Green color for visibility */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .help-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+    </style>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <h2>Login to Diabetes Management System</h2>
+        <select id="userSelect">
+            <option value="">Select your name</option>
+            <option value="Sara Norman">Sara</option>
+            <option value="Gregg Norman">Gregg</option>
+        </select>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div class="dashboard" id="dashboardContainer">
+        <h2 id="welcomeMessage"></h2>
+        <p>Manage your diabetes data efficiently.</p>
+        <div id="bloodSugarPrompt">
+            <p>Have you taken your blood sugar reading today?</p>
+            <button onclick="promptBloodSugar('yes')">Yes</button>
+            <button onclick="promptBloodSugar('no')">No</button>
+        </div>
+        <div id="bloodSugarInput" style="display: none;">
+            <label for="bloodSugarValue">Enter your blood sugar level (0-999):</label>
+            <input type="number" id="bloodSugarValue" min="0" max="999">
+            <button class="submit-button" onclick="submitBloodSugar()">Submit</button>
+        </div>
+        <button class="logout-button" onclick="logout()">Logout</button>
+        <button class="help-button" onclick="activateHelp()">Help</button> <!-- Help button added here -->
+
+    </div>
+    <div id="bloodSugarInput" style="display: none;">
+        <label for="bloodSugarValue">Enter your blood sugar level (0-999):</label>
+        <input type="number" id="bloodSugarValue" min="0" max="999">
+        <button class="submit-button" onclick="submitBloodSugar()">Submit</button>
+    </div>
+
+    <script>
+    const users = {
+        'Sara': '001',
+        'Gregg': '002'
+    };
+    function activateHelp() {
+    alert("Activating Information Assist!! Help is on the way");
+}
+    function submitBloodSugar() {
+        const bloodSugarValue = document.getElementById('bloodSugarValue').value;
+        if (bloodSugarValue === '') {
+            alert('Please enter your blood sugar level.');
+            return;
+        }
+        evaluateBloodSugar(parseInt(bloodSugarValue, 10));
+        document.getElementById('bloodSugarValue').value = ''; // Optional: clear the input after submission
+}
+
+    function promptBloodSugar(answer) {
+    const bloodSugarInputDiv = document.getElementById('bloodSugarInput');
+    if (answer === 'yes') {
+        bloodSugarInputDiv.style.display = 'block';
+    } else {
+        bloodSugarInputDiv.style.display = 'none';
+        alert('Please take a blood sugar test and record the results when possible.');
+    }
+}
+
+    function login() {
+    var userName = document.getElementById('userSelect').value;
+    if (!userName) {
+        alert('Please select a user to login.');
+        return; // Exit the function if no user is selected
+    }
+
+    d3.csv("https://raw.githubusercontent.com/vikash06131721/Data-host/main/someData.csv")
+        .then(function(data) {
+            const userRecord = data.find(d => d.Name === userName);
+
+            if (userRecord) {
+                document.getElementById('welcomeMessage').innerText = 'Welcome, ' + userName + ' (ID: ' + userRecord.ID + ')';
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboardContainer').style.display = 'block';
+            } else {
+                alert('User data not found.'); // Handle the case where user data is not found
+            }
+        })
+        .catch(function(error) {
+            console.error("Error loading the data:", error);
+            alert('Failed to load user data.'); // Error handling for issues with the data fetch
+        });
+}
+
+
+    function loadUserData(userName) {
+        d3.csv("https://raw.githubusercontent.com/vikash06131721/Data-host/main/someData.csv")
+            .then(function(data) {
+                const userRecord = data.find(d => d.Name === userName);
+                if (userRecord) {
+                    const bloodSugarLevel = parseInt(userRecord.bloodSugar, 10);
+                    const l1 = parseInt(userRecord.L1, 10);
+                    const l2 = parseInt(userRecord.L2, 10);
+                    const l3 = parseInt(userRecord.L3, 10);
+                    const l4 = parseInt(userRecord.L4, 10);
+
+                    evaluateBloodSugar(bloodSugarLevel,l1,l2,l3,l4);
+                } else {
+                    console.log('No blood sugar data found for', userName);
+                }
+            })
+            .catch(function(error) {
+                console.error("Error loading the data:", error);
+            });
+    }
+
+    function evaluateBloodSugar(bloodSugarLevel) {
+
+          d3.csv("https://raw.githubusercontent.com/vikash06131721/Data-host/main/someData.csv")
+            .then(function(data) {
+                const userRecord = data.find(d => d.Name === document.getElementById('userSelect').value);
+                if (userRecord) {
+
+                    const l1 = parseInt(userRecord.L1, 10);
+                    const l2 = parseInt(userRecord.L2, 10);
+                    const l3 = parseInt(userRecord.L3, 10);
+                    const l4 = parseInt(userRecord.L4, 10);
+                    const dname = userRecord.DName;
+                    const dphone = userRecord.DPhone;
+                    let status = 'normal';
+                    if (bloodSugarLevel < l1) {
+                        status = 'low';
+                    } else if (bloodSugarLevel > l2 && bloodSugarLevel <l3) {
+                        status = 'normal';
+                    }
+                    else if (bloodSugarLevel>l3){
+                        status ="high"
+                    }
+
+                    const statusElement = document.createElement('p');
+                    if (!isNaN(bloodSugarLevel)) {
+                       if (status === "low") {
+                            statusElement.innerText = `Blood sugar level: ${bloodSugarLevel} (Status: ${status}). You should eat sugar cane, take meds as prescribed by your doctor.`;
+                            document.getElementById('dashboardContainer').appendChild(statusElement);
+
+                            // Create a text input for user to input reasons for low blood sugar
+                            const inputReason = document.createElement('input');
+                            inputReason.type = 'text';
+                            inputReason.placeholder = 'Enter reason for low blood sugar';
+                            inputReason.id = 'lowBloodSugarReason';
+
+                            // Create a submit button for the reason
+                            const submitReasonButton = document.createElement('button');
+                            submitReasonButton.innerText = 'Submit Reason';
+                            submitReasonButton.onclick = function() {
+                                const reason = document.getElementById('lowBloodSugarReason').value;
+                                console.log('Reason for low blood sugar:', reason); // Here you might want to handle the reason, e.g., save it or display it
+                                alert('Reason submitted: ' + reason);
+                            };
+
+                            // Append the input field and button to the dashboard
+                            document.getElementById('dashboardContainer').appendChild(inputReason);
+                            document.getElementById('dashboardContainer').appendChild(submitReasonButton);
+                        }
+                        else if (status=="normal"){
+                            statusElement.innerText = `Blood sugar level: ${bloodSugarLevel} (Status: ${status})`;
+;
+                            document.getElementById('dashboardContainer').appendChild(statusElement);
+
+                        }
+                        else if (status === "high") {
+                            statusElement.innerText = `Blood sugar level: ${bloodSugarLevel} (Status: ${status}). Contact your doctor: ${dname}, Phone: ${dphone}.`;
+                            document.getElementById('dashboardContainer').appendChild(statusElement);
+
+                            // Create a prompt for ketones in urine
+                            const ketonesPrompt = document.createElement('p');
+                            ketonesPrompt.innerText = 'Are there ketones in your urine?';
+                            document.getElementById('dashboardContainer').appendChild(ketonesPrompt);
+
+                            // Create "Yes" button
+                            const yesButton = document.createElement('button');
+                            yesButton.innerText = 'Yes';
+                            yesButton.onclick = function() {
+                                alert('Please follow your emergency plan and contact your healthcare provider immediately.');
+                            };
+
+                            // Create "No" button
+                            const noButton = document.createElement('button');
+                            noButton.innerText = 'No';
+                            noButton.onclick = function() {
+                                alert('Continue to monitor your condition and follow your treatment plan.');
+                            };
+
+                            // Append the buttons to the dashboard
+                            document.getElementById('dashboardContainer').appendChild(yesButton);
+                            document.getElementById('dashboardContainer').appendChild(noButton);
+                        }
+
+                        
+                    } 
+
+                } else {
+                    console.log('No blood sugar data found for', userName);
+                }
+            })
+            .catch(function(error) {
+                console.error("Error loading the data:", error);
+            });
+       
+        
+        // document.getElementById('dashboardContainer').appendChild(statusElement);
+    }
+
+    function logout() {
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('userSelect').value = '';
+    }
+</script>
+
+</body>
+</html>
