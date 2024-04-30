@@ -1,7 +1,7 @@
 Model,Emb,value
-BiLSTM,T5,92
-BiLSTM,Bert,80
-BiLSTM,Gpt2,90
+LSTM,T5,92
+LSTM,Bert,80
+LSTM,Gpt2,90
 CNN,T5,55
 CNN,Bert,85
 CNN,Gpt2,45
